@@ -1,0 +1,19 @@
+syntax = "proto3";
+package user_proto;
+
+//错误码
+message errorinfo {
+    uint32 error_code = 1; //错误码
+    bytes error_info = 2; //错误描述信息
+}
+
+enum ECmd //枚举消息类型
+{
+    UNKNOWN = 0;
+
+    E_LOGIN_REQ = 1005;
+    E_LOGIN_RSP = 1006;
+
+    E_ZONE_GET_REQ = 1015;
+    E_ZONE_GET_RSP = 1016;
+}
