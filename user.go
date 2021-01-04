@@ -14,7 +14,7 @@ func UserLogin(conn net.Conn, t uint32, phone string, passwd string) ([]byte, ui
 	req := user_proto.LoginReq{Phone: []byte(phone), VerifyInfo: []byte(passwd), Type: 1}
 	b, _ := proto.Marshal(&req)
 	//消息发送
-	b, pri := SendMsg(conn, phone, b, 2, int(user_proto.ECmd_E_LOGIN_REQ))
+	b, pri := SendMsg(conn, phone, b, 1, int(user_proto.ECmd_E_LOGIN_REQ), 2)
 	//解析返回
 	rsp := user_proto.LoginRsp{}
 	proto.Unmarshal(b, &rsp)
@@ -24,7 +24,7 @@ func UserLogin(conn net.Conn, t uint32, phone string, passwd string) ([]byte, ui
 func ZoneGet(conn net.Conn, phone string) {
 	req := user_proto.ZoneGetReq{}
 	b, _ := proto.Marshal(&req)
-	b, _ = SendMsg(conn, phone, b, 2, int(user_proto.ECmd_E_ZONE_GET_REQ))
+	b, _ = SendMsg(conn, phone, b, 1, int(user_proto.ECmd_E_ZONE_GET_REQ), 1)
 	rsp := user_proto.ZoneGetRsp{}
 	proto.Unmarshal(b, &rsp)
 	fmt.Printf("%v %s\n", rsp, string(rsp.GetList()[0].Country))

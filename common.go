@@ -115,7 +115,7 @@ func Token_auth(signedToken string) (uint64, string, error) {
 	return 0, "", err
 }
 
-func SendMsg(conn net.Conn, phone string, b []byte, server int, cmd int) (ret, pri []byte) {
+func SendMsg(conn net.Conn, phone string, b []byte, server, cmd, cacheis int) (ret, pri []byte) {
 	var err error
 	v, ok := mapUser[phone]
 	//判断是否加载秘钥，进行消息加密
@@ -129,7 +129,8 @@ func SendMsg(conn net.Conn, phone string, b []byte, server int, cmd int) (ret, p
 	//业务体封装
 	body := user_proto.MsgBody{Body: b}
 	b, _ = proto.Marshal(&body)
-	head := user_proto.MsgHead{Version: 1, App: 1, Server: uint32(server), Servant: uint32(cmd), Seq: 1, RouteId: 1, BodyLen: uint32(len(b)), Encrypt: encrypt}
+	head := user_proto.MsgHead{Version: 1, App: 1, Server: uint32(server), Servant: uint32(cmd),
+		Seq: 1, RouteId: 1, BodyLen: uint32(len(b)), Encrypt: encrypt, CacheIs: uint32(cacheis)}
 	outHeadRsp, err := proto.Marshal(&head)
 	if err != nil {
 		fmt.Printf("faile to Marshal msg.err: %v", err)
@@ -142,7 +143,7 @@ func SendMsg(conn net.Conn, phone string, b []byte, server int, cmd int) (ret, p
 		fmt.Printf("Write msg.err: %v", err)
 		return
 	}
-	var data1 [44]byte
+	var data1 [49]byte
 	//读取头
 	n, err = conn.Read(data1[:])
 	if err != nil {
